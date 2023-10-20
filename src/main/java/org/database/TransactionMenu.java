@@ -63,7 +63,7 @@ public class TransactionMenu {
             System.out.println("1. Begin Transaction");
             System.out.println("2. Commit");
             System.out.println("3. Rollback");
-            System.out.println("4. Exit");
+            System.out.println("4. Logout");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();

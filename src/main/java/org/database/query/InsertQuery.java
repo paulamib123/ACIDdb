@@ -17,6 +17,11 @@ public class InsertQuery extends Query {
     public InsertQuery(String insertQuery, Database database) {
         this.sqlQuery = insertQuery;
         this.database = database;
+        this.datatypes = new ArrayList<>();
+        this.datatypes.add("string");
+        this.datatypes.add("int");
+        this.datatypes.add("bool");
+        this.datatypes.add("double");
     }
 
     @Override
@@ -44,7 +49,22 @@ public class InsertQuery extends Query {
         database.tableByRow.put(tableName, rows);
     }
 
-    private static Map<String, String> getColumnValues(String insertQuery) {
+    public boolean isValidDatatype(String type, String value) {
+        if (datatypes.contains(type)) {
+            if (type.equals("int")) {
+                return value.matches("^-?\\d+$");
+            } else if (type.equals("bool")) {
+                return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
+            } else if (type.equals("double")) {
+                return value.matches("^[-+]?\\d*\\.?\\d*$");
+            }
+        } else {
+            throw new RuntimeException(type + " is a invalid datatype");
+        }
+        return false;
+    }
+
+    private Map<String, String> getColumnValues(String insertQuery) {
         // Extract column names
         Pattern pattern = Pattern.compile("\\((.*?)\\)");
         Matcher matcher = pattern.matcher(insertQuery);
@@ -71,7 +91,13 @@ public class InsertQuery extends Query {
         // Create map
         Map<String, String> columnByValue = new HashMap<>();
         for(int i=0; i<columns.size(); i++) {
-            columnByValue.put(columns.get(i), values.get(i));
+            //TODO - need to find a way to fetch the datatype of the column name
+            if (this.isValidDatatype(columns.get(i), values.get(i))) {
+                columnByValue.put(columns.get(i), values.get(i));
+            } else {
+                throw new RuntimeException("invalid datatype");
+            }
+
         }
 
         // Print map

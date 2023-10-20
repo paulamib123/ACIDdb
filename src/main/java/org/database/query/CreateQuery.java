@@ -16,6 +16,15 @@ public class CreateQuery extends Query {
     public CreateQuery(String createQuery, Database database) {
         this.sqlQuery = createQuery;
         this.database = database;
+        this.datatypes = new ArrayList<>();
+        this.datatypes.add("string");
+        this.datatypes.add("int");
+        this.datatypes.add("bool");
+        this.datatypes.add("double");
+    }
+
+    public boolean isValidDatatype(String type) {
+        return datatypes.contains(type);
     }
 
     @Override
@@ -42,7 +51,7 @@ public class CreateQuery extends Query {
         }
     }
 
-    private static Map<String, String> getColumnsAndDataType(String createQuery) {
+    private Map<String, String> getColumnsAndDataType(String createQuery) {
         Pattern pattern = Pattern.compile("(\\w+)\\s(\\w+)");
         Matcher matcher = pattern.matcher(createQuery);
         Map<String, String> columnByDataType = new HashMap<>();
@@ -50,7 +59,12 @@ public class CreateQuery extends Query {
         while(matcher.find()){
             String columnName = matcher.group(1);
             String dataType = matcher.group(2);
-            columnByDataType.put(columnName, dataType);
+            if (this.isValidDatatype(dataType)) {
+                columnByDataType.put(columnName, dataType);
+            } else {
+                throw new RuntimeException("Invalid Datatype!");
+            }
+
 
             //System.out.println("Column: " + columnName + ", DataType: " + dataType);
         }
@@ -58,7 +72,7 @@ public class CreateQuery extends Query {
         return columnByDataType;
     }
 
-    private static Map<String, String> getColumns(String createQuery) {
+    private Map<String, String> getColumns(String createQuery) {
         Pattern pattern = Pattern.compile("\\((.*?)\\);"); // Regex to match text inside parentheses
 
         Matcher matcher = pattern.matcher(createQuery);
