@@ -3,43 +3,44 @@ package org.database.query;
 import org.database.Database;
 
 import java.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.database.GlobalLogger;
+import org.database.User;
 
 public class SelectQuery extends Query {
-    private static final Logger logger = LoggerFactory.getLogger(SelectQuery.class);
     public String tableName;
-    public Set<String> columns;
+    public List<String> columns;
 
-    public SelectQuery(String selectQuery, Database database) {
+    public SelectQuery(String selectQuery, Database database, User user) {
         this.sqlQuery = selectQuery;
         this.database = database;
+        this.user = user;
     }
 
     @Override
-    public void execute(String selectQuery, Database database) {
+    public void execute(String selectQuery, Database database, User user) {
         this.tableName = getTableName(selectQuery);
         this.columns = getColumns(selectQuery);
         this.database = database;
         printOutput(this.tableName, this.columns, this.database);
+        GlobalLogger.log(selectQuery, user.username);
     }
     private static String  getTableName(String selectQuery) {
         try {
             List<String> words = List.of(selectQuery.split(" "));
-            logger.debug("Table name: " + words.get(3).replaceAll(";",""));
             return words.get(3).replaceAll(";","");
         } catch (Exception e) {
             throw new RuntimeException("Could not find table!");
         }
     }
 
-    private static Set<String> getColumns(String selectQuery) {
+    private static List<String> getColumns(String selectQuery) {
         List<String> words = List.of(selectQuery.split(" "));
-        logger.debug("Columns to be Selected " + Set.of(words.get(1).split(",")));
-        return Set.of(words.get(1).split(","));
+        return List.of(words.get(1).split(","));
     }
 
-    private static void printOutput(String tableName, Set<String> columns, Database database) {
+
+private void printOutput(String tableName, List<String> columns, Database database) {
         Map<String, ArrayList<Map<String, String>>> tables = database.tableByRow;
         ArrayList<Map<String, String>> rows = tables.getOrDefault(tableName, new ArrayList<>());
 
@@ -59,7 +60,6 @@ public class SelectQuery extends Query {
                     }
                     System.out.println();
                 }
-                logger.info("Finished Execution of Select Query");
             } else {
                 System.out.println("Database is Empty!");
             }

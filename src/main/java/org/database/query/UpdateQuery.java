@@ -2,37 +2,37 @@ package org.database.query;
 
 
 import org.database.Database;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.database.GlobalLogger;
+import org.database.User;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UpdateQuery extends Query {
-    private static final Logger logger = LoggerFactory.getLogger(UpdateQuery.class);
     public String tableName;
     public Map<String, String> updatedColumns;
     public List<String> updateFilter;
 
-    public UpdateQuery(String updateQuery, Database database) {
+    public UpdateQuery(String updateQuery, Database database, User user) {
         this.sqlQuery = updateQuery;
         this.database = database;
+        this.user = user;
     }
 
     @Override
-    public void execute(String updateQuery, Database database) {
+    public void execute(String updateQuery, Database database, User user) {
         this.tableName = getTableName(updateQuery);
         this.updatedColumns = getUpdatedColumns(updateQuery);
         this.updateFilter = getUpdateFilter(updateQuery);
         this.database = database;
         getRowToBeUpdated(this.updateFilter, this.updatedColumns, this.database, this.tableName);
+        GlobalLogger.log(updateQuery, user.username);
     }
 
     private static String getTableName(String updateQuery) {
         try {
             List<String> words = List.of(updateQuery.split(" "));
-            logger.debug("Table name: " + words.get(1));
             return words.get(1);
         } catch (Exception e) {
             throw new RuntimeException("Could not find table!");
@@ -58,7 +58,6 @@ public class UpdateQuery extends Query {
                 }
             }
         }
-        logger.debug("Columns to be updated: " + columnValueMap);
         return columnValueMap;
     }
 
@@ -71,12 +70,11 @@ public class UpdateQuery extends Query {
         if (matcher.find()) {
             String condition = matcher.group(1).trim();
             String column = condition.split("=")[0];
-            String value = condition.split("=")[1];
+            String value = condition.split("=")[1].replaceAll(";", "");
             columnValueMap.add(column);
             columnValueMap.add(value);
         }
 
-        logger.debug("Update clause: " + columnValueMap);
         return columnValueMap;
     }
 

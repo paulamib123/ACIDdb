@@ -1,8 +1,8 @@
 package org.database.query;
 
 import org.database.Database;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.database.GlobalLogger;
+import org.database.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,31 +10,29 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*DELETE FROM table_name WHERE condition;*/
 public class DeleteQuery extends Query {
     public String tableName;
     public List<String> deleteFilter;
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteQuery.class);
-
-    public DeleteQuery(String deleteQuery, Database database) {
+    public DeleteQuery(String deleteQuery, Database database, User user) {
         this.sqlQuery = deleteQuery;
         this.database = database;
+        this.user = user; 
     }
 
     @Override
-    public void execute(String deleteQuery, Database database) {
+    public void execute(String deleteQuery, Database database, User user) {
         this.tableName = getTableName(deleteQuery);
         this.deleteFilter = getDeleteFilter(deleteQuery);
         this.database = database;
         executeDelete(this.deleteFilter, this.database, this.tableName);
+        GlobalLogger.log(deleteQuery, user.username);
     }
 
 
     private static String getTableName(String updateQuery) {
         try {
             List<String> words = List.of(updateQuery.split(" "));
-            logger.debug("Table name: " + words.get(2).replaceAll(";", ""));
             return words.get(2).replaceAll(";", "");
         } catch (Exception e) {
             throw new RuntimeException("Could not find table!");
@@ -55,7 +53,6 @@ public class DeleteQuery extends Query {
             columnValueMap.add(value);
         }
 
-        logger.debug("Delete Clause: " + columnValueMap);
         return columnValueMap;
     }
 
@@ -67,9 +64,8 @@ public class DeleteQuery extends Query {
         ArrayList<Map<String, String>> rows = tables.getOrDefault(tableName, new ArrayList<>());
 
         if (deleteFilter.isEmpty()) {
+            //delete all rows
             rows.clear();
-            logger.info("Deleted All Rows");
-            System.out.println("Table is Empty!");
             database.tableByRow.put(tableName, rows);
             return;
         }
@@ -89,7 +85,6 @@ public class DeleteQuery extends Query {
                     if (flag) {
                         //delete this row from the arraylist
                         rowsToDelete.add(row);
-                        logger.info("Deleted Row");
                         flag = false;
                     }
                 }

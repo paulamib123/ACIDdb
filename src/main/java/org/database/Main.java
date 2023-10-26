@@ -1,10 +1,5 @@
 package org.database;
 
-import org.database.query.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class Main {
 
 //    public static void main2() {
@@ -37,18 +32,18 @@ public class Main {
 //    }
 
     public static void main(String[] args) {
-        String createQuery = "CREATE TABLE students (id int, name String, class int);";
+        String createQuery = "CREATE TABLE students (id int, name string, class int);";
         String insertQuery = "INSERT INTO students (id, name, class) VALUES (1, 'jay', 10);";
         String insertQuery2 = "INSERT INTO students (id, name, class) VALUES (2, 'aakash', 12);";
         String selectQuery = "SELECT * FROM students;";
         String selectQuery2 = "SELECT id,name FROM students;";
-        String updateQuery = "UPDATE students SET name=ankit WHERE id=1";
-        String updateQuery2 = "UPDATE students SET name=ananya WHERE id=2";
+        String updateQuery = "UPDATE students SET name=ankit WHERE id=1;";
+        String updateQuery2 = "UPDATE students SET name=ananya WHERE id=2;";
         String insertQuery3 = "INSERT INTO students (id, name, class) VALUES (3, 'anjali', 9);";
         String deleteQuery = "DELETE FROM students WHERE id=1;";
         String deleteQuery2 = "DELETE FROM students;";
 
         Authentication auth = new Authentication();
-        auth.login();
+        auth.authenticationMenu();
     }
 }

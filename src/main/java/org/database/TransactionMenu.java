@@ -12,12 +12,12 @@ public class TransactionMenu {
 
     public List<Query> transactions;
 
-    TransactionMenu(Database database) {
+    TransactionMenu(User user) {
         this.transactions = new ArrayList<>();
-        displayMenu(database);
+        displayMenu(user.database, user);
     }
 
-    public void checkSQLKeyword(String input, Database database) {
+    public void checkSQLKeyword(String input, Database database, User user) {
         if (input.isEmpty()) {
             System.out.println("Invalid SQL Query");
             return;
@@ -27,23 +27,23 @@ public class TransactionMenu {
 
         switch (lowercaseInput) {
             case "select":
-                SelectQuery select = new SelectQuery(input, database);
+                SelectQuery select = new SelectQuery(input, database, user);
                 this.transactions.add(select);
                 break;
             case "insert":
-                InsertQuery insert = new InsertQuery(input, database);
+                InsertQuery insert = new InsertQuery(input, database, user);
                 this.transactions.add(insert);
                 break;
             case "delete":
-                DeleteQuery delete = new DeleteQuery(input, database);
+                DeleteQuery delete = new DeleteQuery(input, database, user);
                 this.transactions.add(delete);
                 break;
             case "update":
-                UpdateQuery update = new UpdateQuery(input, database);
+                UpdateQuery update = new UpdateQuery(input, database, user);
                 this.transactions.add(update);
                 break;
             case "create":
-                CreateQuery create = new CreateQuery(input, database);
+                CreateQuery create = new CreateQuery(input, database, user);
                 this.transactions.add(create);
                 break;
             default:
@@ -52,7 +52,7 @@ public class TransactionMenu {
         }
     }
 
-    public void displayMenu(Database database) {
+    public void displayMenu(Database database, User user) {
         Scanner scanner = new Scanner(System.in);
 
         int choice;
@@ -81,7 +81,7 @@ public class TransactionMenu {
                              if (input.equalsIgnoreCase("End")) {
                                 break;
                             } else {
-                                 this.checkSQLKeyword(input, database);
+                                 this.checkSQLKeyword(input, database, user);
                              }
                         }
                         isTransactionInProgress = true;
@@ -90,7 +90,7 @@ public class TransactionMenu {
                 case 2:
                     if (isTransactionInProgress) {
                         for (Query query: transactions) {
-                            query.execute(query.sqlQuery, query.database);
+                            query.execute(query.sqlQuery, query.database, query.user);
                         }
                         this.transactions.clear();
                         System.out.println("Transaction committed");

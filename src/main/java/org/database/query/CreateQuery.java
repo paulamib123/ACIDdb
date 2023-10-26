@@ -1,6 +1,8 @@
 package org.database.query;
 
 import org.database.Database;
+import org.database.GlobalLogger;
+import org.database.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +15,10 @@ public class CreateQuery extends Query {
     public String tableName;
     public Map<String, String> columns;
 
-    public CreateQuery(String createQuery, Database database) {
+    public CreateQuery(String createQuery, Database database, User user) {
         this.sqlQuery = createQuery;
         this.database = database;
+        this.user = user;
         this.datatypes = new ArrayList<>();
         this.datatypes.add("string");
         this.datatypes.add("int");
@@ -28,11 +31,11 @@ public class CreateQuery extends Query {
     }
 
     @Override
-    public void execute(String createQuery, Database database) {
+    public void execute(String createQuery, Database database, User user) {
         this.tableName = getTableName(createQuery);
         this.columns = getColumns(createQuery);
-        //this.database = database;
         createTable(this.database, this.tableName, this.columns);
+        GlobalLogger.log(createQuery, user.username);
     }
 
     private static void createTable(Database database, String tableName, Map<String, String> columns) {
@@ -43,9 +46,7 @@ public class CreateQuery extends Query {
     private static String  getTableName(String createQuery) {
         try {
             List<String> words = List.of(createQuery.split(" "));
-            String tableName = words.get(2);
-            //System.out.println("Table name: " + tableName);
-            return tableName;
+            return words.get(2);
         } catch (Exception e) {
             throw new RuntimeException("Could not find table!");
         }

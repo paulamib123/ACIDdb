@@ -1,6 +1,8 @@
 package org.database.query;
 
 import org.database.Database;
+import org.database.GlobalLogger;
+import org.database.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,14 +11,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*INSERT INTO students (id, name, class) VALUES (1, "jay", 10)*/
 public class InsertQuery extends Query {
     public String tableName;
     public Map<String, String> row;
 
-    public InsertQuery(String insertQuery, Database database) {
+    public InsertQuery(String insertQuery, Database database, User user) {
         this.sqlQuery = insertQuery;
         this.database = database;
+        this.user = user;
         this.datatypes = new ArrayList<>();
         this.datatypes.add("string");
         this.datatypes.add("int");
@@ -25,11 +27,12 @@ public class InsertQuery extends Query {
     }
 
     @Override
-    public void execute(String insertQuery, Database database) {
+    public void execute(String insertQuery, Database database, User user) {
         this.tableName = getTableName(insertQuery, database);
-        this.row = getColumnValues(insertQuery);
+        this.row = getRowData(insertQuery);
         this.database = database;
         insertRowInTable(this.database, this.tableName, this.row);
+        GlobalLogger.log(insertQuery, user.username);
     }
 
     private static String getTableName(String insertQuery, Database database) {
@@ -50,9 +53,11 @@ public class InsertQuery extends Query {
     }
 
     public boolean isValidDatatype(String type, String value) {
+        System.out.println(type);
+        System.out.println(value);
         if (datatypes.contains(type)) {
             if (type.equals("int")) {
-                return value.matches("^-?\\d+$");
+                return value.matches("[1-9][0-9]*");
             } else if (type.equals("bool")) {
                 return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
             } else if (type.equals("double")) {
@@ -64,7 +69,7 @@ public class InsertQuery extends Query {
         return false;
     }
 
-    private Map<String, String> getColumnValues(String insertQuery) {
+    private Map<String, String> getRowData(String insertQuery) {
         // Extract column names
         Pattern pattern = Pattern.compile("\\((.*?)\\)");
         Matcher matcher = pattern.matcher(insertQuery);
@@ -88,19 +93,20 @@ public class InsertQuery extends Query {
         //System.out.println(columns);
         //System.out.println(values);
 
-        // Create map
         Map<String, String> columnByValue = new HashMap<>();
         for(int i=0; i<columns.size(); i++) {
+            columnByValue.put(columns.get(i), values.get(i));
             //TODO - need to find a way to fetch the datatype of the column name
-            if (this.isValidDatatype(columns.get(i), values.get(i))) {
-                columnByValue.put(columns.get(i), values.get(i));
-            } else {
-                throw new RuntimeException("invalid datatype");
-            }
+//            Map<String, String>  columnByDatatype = this.database.tableByColumns.get(this.tableName);
+//            String datatype = columnByDatatype.getOrDefault(columns.get(i), "");
+//            if (this.isValidDatatype(datatype, values.get(i))) {
+//                columnByValue.put(columns.get(i), values.get(i));
+//            } else {
+//                throw new RuntimeException("invalid datatype");
+//            }
 
         }
 
-        // Print map
         //System.out.println(columnByValue);
         return columnByValue;
     }
