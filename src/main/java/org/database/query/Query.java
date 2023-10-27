@@ -9,6 +9,5 @@ public abstract class Query {
     public String sqlQuery;
     public Database database;
     public User user;
-    public List<String> datatypes;
     public abstract void execute(String createQuery, Database database, User user);
 }

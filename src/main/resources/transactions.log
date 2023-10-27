@@ -29,3 +29,13 @@
 2023-10-26 22:09:32 : akshat : INSERT INTO students (id, name, class) VALUES (1, 'jay', 10);
 2023-10-26 22:09:32 : akshat : INSERT INTO students (id, name, class) VALUES (2, 'aakash', 12);
 2023-10-26 22:09:32 : akshat : SELECT * FROM students;
+2023-10-27 14:01:34 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-27 14:03:36 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-27 14:07:14 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-27 14:11:20 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-27 14:11:59 : akshat : INSERT INTO students (id, name, class) VALUES (1, 'jay', 10);
+2023-10-27 14:11:59 : akshat : INSERT INTO students (id, name, class) VALUES (2, 'aakash', 12);
+2023-10-27 14:15:05 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-27 14:15:05 : akshat : INSERT INTO students (id, name, class) VALUES (1, 'jay', 10);
+2023-10-27 14:15:05 : akshat : INSERT INTO students (id, name, class) VALUES (2, 'aakash', 12);
+2023-10-27 14:15:05 : akshat : SELECT * FROM students;

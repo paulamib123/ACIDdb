@@ -19,11 +19,6 @@ public class InsertQuery extends Query {
         this.sqlQuery = insertQuery;
         this.database = database;
         this.user = user;
-        this.datatypes = new ArrayList<>();
-        this.datatypes.add("string");
-        this.datatypes.add("int");
-        this.datatypes.add("bool");
-        this.datatypes.add("double");
     }
 
     @Override
@@ -53,18 +48,17 @@ public class InsertQuery extends Query {
     }
 
     public boolean isValidDatatype(String type, String value) {
-        System.out.println(type);
-        System.out.println(value);
-        if (datatypes.contains(type)) {
-            if (type.equals("int")) {
-                return value.matches("[1-9][0-9]*");
-            } else if (type.equals("bool")) {
-                return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
-            } else if (type.equals("double")) {
-                return value.matches("^[-+]?\\d*\\.?\\d*$");
-            }
-        } else {
-            throw new RuntimeException(type + " is a invalid datatype");
+        //System.out.println(type);
+        //System.out.println(value);
+
+        if (type.equals("int")) {
+            return value.matches("\\-?\\d+");
+        } else if (type.equals("bool")) {
+            return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
+        } else if (type.equals("double")) {
+            return value.matches("-?\\d*\\.\\d+");
+        } else if (type.equals("string")) {
+            return true;
         }
         return false;
     }
@@ -95,16 +89,13 @@ public class InsertQuery extends Query {
 
         Map<String, String> columnByValue = new HashMap<>();
         for(int i=0; i<columns.size(); i++) {
-            columnByValue.put(columns.get(i), values.get(i));
-            //TODO - need to find a way to fetch the datatype of the column name
-//            Map<String, String>  columnByDatatype = this.database.tableByColumns.get(this.tableName);
-//            String datatype = columnByDatatype.getOrDefault(columns.get(i), "");
-//            if (this.isValidDatatype(datatype, values.get(i))) {
-//                columnByValue.put(columns.get(i), values.get(i));
-//            } else {
-//                throw new RuntimeException("invalid datatype");
-//            }
-
+            Map<String, String>  columnByDatatype = this.database.tableByColumns.get(this.tableName);
+            String datatype = columnByDatatype.getOrDefault(columns.get(i), "");
+            if (this.isValidDatatype(datatype, values.get(i))) {
+                columnByValue.put(columns.get(i), values.get(i));
+            } else {
+                throw new RuntimeException("datatype mismatch error");
+            }
         }
 
         //System.out.println(columnByValue);

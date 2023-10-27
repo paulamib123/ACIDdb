@@ -15,6 +15,8 @@ public class CreateQuery extends Query {
     public String tableName;
     public Map<String, String> columns;
 
+    public List<String> datatypes;
+
     public CreateQuery(String createQuery, Database database, User user) {
         this.sqlQuery = createQuery;
         this.database = database;
