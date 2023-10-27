@@ -5,6 +5,7 @@ import org.database.Database;
 import org.database.GlobalLogger;
 import org.database.User;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +27,14 @@ public class UpdateQuery extends Query {
         this.updatedColumns = getUpdatedColumns(updateQuery);
         this.updateFilter = getUpdateFilter(updateQuery);
         this.database = database;
-        getRowToBeUpdated(this.updateFilter, this.updatedColumns, this.database, this.tableName);
-        GlobalLogger.log(updateQuery, user.username);
+        try {
+            getRowToBeUpdated(this.updateFilter, this.updatedColumns, this.database, this.tableName);
+            database.writeData(tableName);
+            GlobalLogger.log(updateQuery, user.username);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static String getTableName(String updateQuery) {
@@ -82,8 +89,8 @@ public class UpdateQuery extends Query {
                                   Map<String, String> updatedColumns,
                                   Database database,
                                   String tableName) {
-        Map<String, ArrayList<Map<String, String>>> tables = database.tableByRow;
-        ArrayList<Map<String, String>> rows = tables.getOrDefault(tableName, new ArrayList<>());
+        Map<String, Set<Map<String, String>>> tables = database.tableByRow;
+        Set<Map<String, String>> rows = tables.getOrDefault(tableName, new HashSet<>());
 
         try {
             String toUpdateColumn = updateFilter.get(0);

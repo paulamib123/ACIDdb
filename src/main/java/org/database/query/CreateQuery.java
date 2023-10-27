@@ -4,10 +4,7 @@ import org.database.Database;
 import org.database.GlobalLogger;
 import org.database.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +39,7 @@ public class CreateQuery extends Query {
 
     private static void createTable(Database database, String tableName, Map<String, String> columns) {
         database.tableByColumns.put(tableName, columns);
-        database.tableByRow.put(tableName, new ArrayList<>());
+        database.tableByRow.put(tableName, new HashSet<>());
     }
 
     private static String  getTableName(String createQuery) {

@@ -7,9 +7,13 @@
     <list default="true" id="a58845ab-d176-4ddd-b9cb-f3ac8e4ded50" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/database/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/CreateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/CreateQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/DeleteQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/DeleteQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/InsertQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/InsertQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/Query.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/SelectQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/SelectQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/database/query/UpdateQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/database/query/UpdateQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/transactions.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/transactions.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,6 +26,9 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />

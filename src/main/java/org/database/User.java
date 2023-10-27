@@ -1,5 +1,8 @@
 package org.database;
 
+import java.io.IOException;
+import java.util.Set;
+
 public class User {
     public String username;
     public String password;

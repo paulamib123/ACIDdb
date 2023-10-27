@@ -4,10 +4,8 @@ import org.database.Database;
 import org.database.GlobalLogger;
 import org.database.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +24,13 @@ public class InsertQuery extends Query {
         this.tableName = getTableName(insertQuery, database);
         this.row = getRowData(insertQuery);
         this.database = database;
-        insertRowInTable(this.database, this.tableName, this.row);
-        GlobalLogger.log(insertQuery, user.username);
+        try {
+            insertRowInTable(this.database, this.tableName, this.row);
+            database.writeData(tableName);
+            GlobalLogger.log(insertQuery, user.username);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static String getTableName(String insertQuery, Database database) {
@@ -42,7 +45,7 @@ public class InsertQuery extends Query {
     }
 
     private static void insertRowInTable(Database database, String tableName, Map<String, String> row) {
-        ArrayList<Map<String, String>> rows = database.tableByRow.getOrDefault(tableName, new ArrayList<>());
+        Set<Map<String, String>> rows = database.tableByRow.getOrDefault(tableName, new HashSet<>());
         rows.add(row);
         database.tableByRow.put(tableName, rows);
     }

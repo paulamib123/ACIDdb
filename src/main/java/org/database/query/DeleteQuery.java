@@ -4,9 +4,8 @@ import org.database.Database;
 import org.database.GlobalLogger;
 import org.database.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +16,7 @@ public class DeleteQuery extends Query {
     public DeleteQuery(String deleteQuery, Database database, User user) {
         this.sqlQuery = deleteQuery;
         this.database = database;
-        this.user = user; 
+        this.user = user;
     }
 
     @Override
@@ -26,7 +25,12 @@ public class DeleteQuery extends Query {
         this.deleteFilter = getDeleteFilter(deleteQuery);
         this.database = database;
         executeDelete(this.deleteFilter, this.database, this.tableName);
-        GlobalLogger.log(deleteQuery, user.username);
+        try {
+            database.writeData(tableName);
+            GlobalLogger.log(deleteQuery, user.username);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -59,9 +63,9 @@ public class DeleteQuery extends Query {
     public void executeDelete(List<String> deleteFilter,
                                   Database database,
                                   String tableName) {
-        List<Map<String, String>> rowsToDelete = new ArrayList<>();
-        Map<String, ArrayList<Map<String, String>>> tables = database.tableByRow;
-        ArrayList<Map<String, String>> rows = tables.getOrDefault(tableName, new ArrayList<>());
+        Set<Map<String, String>> rowsToDelete = new HashSet<>();
+        Map<String, Set<Map<String, String>>> tables = database.tableByRow;
+        Set<Map<String, String>> rows = tables.getOrDefault(tableName, new HashSet<>());
 
         if (deleteFilter.isEmpty()) {
             //delete all rows
@@ -89,7 +93,11 @@ public class DeleteQuery extends Query {
                     }
                 }
             }
-            rows.removeAll(rowsToDelete);
+            System.out.println("rows to delete");
+            System.out.println(rowsToDelete);
+            for (Map<String, String> row: rowsToDelete) {
+                rows.remove(row);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to execute Delete Query!");
         }

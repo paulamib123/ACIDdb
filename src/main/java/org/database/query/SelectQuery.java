@@ -41,8 +41,8 @@ public class SelectQuery extends Query {
 
 
 private void printOutput(String tableName, List<String> columns, Database database) {
-        Map<String, ArrayList<Map<String, String>>> tables = database.tableByRow;
-        ArrayList<Map<String, String>> rows = tables.getOrDefault(tableName, new ArrayList<>());
+        Map<String, Set<Map<String, String>>> tables = database.tableByRow;
+        Set<Map<String, String>> rows = tables.getOrDefault(tableName, new HashSet<>());
 
         try {
             if (!rows.isEmpty()) {
