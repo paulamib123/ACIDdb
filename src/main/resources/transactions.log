@@ -19,3 +19,6 @@
 2023-10-30 20:10:28 : akshat : DELETE FROM students;
 2023-10-30 20:10:28 : akshat : SELECT * FROM students;
 2023-10-30 20:14:20 : akshat : SELECT * FROM students;
+2023-10-30 23:51:56 : akshat : CREATE TABLE students (id int, name string, class int);
+2023-10-30 23:51:56 : akshat : INSERT INTO students (id, name, class) VALUES (1, 'jay', 10);
+2023-10-30 23:55:02 : akshat : CREATE TABLE emp (id int, name string, department string);

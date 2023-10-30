@@ -27,6 +27,7 @@ public class Database {
                     }
                 }
             }
+            loadMetadataFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -77,4 +78,53 @@ public class Database {
 
         writer.close();
     }
-}
+
+        public void saveMetadataToFile() {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(PATH + "metadata.txt"))) {
+                for (Map.Entry<String, Map<String, String>> tableEntry : tableByColumns.entrySet()) {
+                    String tableName = tableEntry.getKey();
+                    Map<String, String> columnMap = tableEntry.getValue();
+                    StringBuilder tableMetadata = new StringBuilder(tableName + "-");
+
+                    for (Map.Entry<String, String> columnEntry : columnMap.entrySet()) {
+                        String columnName = columnEntry.getKey();
+                        String dataType = columnEntry.getValue();
+                        tableMetadata.append(columnName + ":" + dataType + ",");
+                    }
+
+                    writer.write(tableMetadata.toString());
+                    writer.newLine();
+                }
+                System.out.println("write to file");
+                System.out.println(tableByColumns);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void loadMetadataFromFile() throws IOException {
+
+            BufferedReader reader = new BufferedReader(new FileReader(PATH + "metadata.txt"));
+                String line;
+            while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("-");
+                    if (parts.length == 2) {
+                        String tableName = parts[0];
+                        String[] columnData = parts[1].split(",");
+                        Map<String, String> columnMap = new HashMap<>();
+                        for (String column : columnData) {
+                            String[] colInfo = column.split(":");
+                            if (colInfo.length == 2) {
+                                String colName = colInfo[0];
+                                String dataType = colInfo[1];
+                                columnMap.put(colName, dataType);
+                            }
+                        }
+                        this.tableByColumns.put(tableName, columnMap);
+                    }
+                }
+            System.out.println("read from file");
+            System.out.println(tableByColumns);
+            }
+
+        }

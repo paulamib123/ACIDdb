@@ -34,6 +34,7 @@ public class CreateQuery extends Query {
         this.tableName = getTableName(createQuery);
         this.columns = getColumns(createQuery);
         createTable(this.database, this.tableName, this.columns);
+        this.database.saveMetadataToFile();
         GlobalLogger.log(createQuery, user.username);
     }
 

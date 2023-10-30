@@ -1,0 +1,2 @@
+students-name:string,id:int,class:int,
+emp-name:string,id:int,department:string,
