@@ -93,11 +93,10 @@ public class DeleteQuery extends Query {
                     }
                 }
             }
-            System.out.println("rows to delete");
-            System.out.println(rowsToDelete);
             for (Map<String, String> row: rowsToDelete) {
                 rows.remove(row);
             }
+            database.tableByRow.put(tableName, rows);
         } catch (Exception e) {
             throw new RuntimeException("Failed to execute Delete Query!");
         }

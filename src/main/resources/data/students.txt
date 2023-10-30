@@ -1,2 +1,0 @@
-name:aakash,id:2,class:12,
-name:jay,id:1,class:10,
